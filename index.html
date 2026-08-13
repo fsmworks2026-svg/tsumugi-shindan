@@ -1,0 +1,500 @@
+<title>恋愛心理タイプ診断 | つむぎ恋愛研究所</title>
+<style>
+  :root {
+    --ivory: #F5F0E8;
+    --ivory-deep: #EDE5D8;
+    --navy: #35415C;
+    --navy-soft: #6B7A8F;
+    --navy-mist: #8A93A6;
+    --rose: #D8A9A3;
+    --rose-deep: #C48D86;
+    --rose-ink: #7A4F4B;
+    --surface: #FFFDF9;
+    --shadow: rgba(53, 65, 92, 0.12);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ivory: #1B2130;
+      --ivory-deep: #141822;
+      --navy: #EFE8DC;
+      --navy-soft: #B9C0CE;
+      --navy-mist: #7C889C;
+      --rose: #E3B7B1;
+      --rose-deep: #EFC9C4;
+      --rose-ink: #F3D6D2;
+      --surface: #232A3B;
+      --shadow: rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ivory: #1B2130;
+    --ivory-deep: #141822;
+    --navy: #EFE8DC;
+    --navy-soft: #B9C0CE;
+    --navy-mist: #7C889C;
+    --rose: #E3B7B1;
+    --rose-deep: #EFC9C4;
+    --rose-ink: #F3D6D2;
+    --surface: #232A3B;
+    --shadow: rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+
+  :root[data-theme="light"] {
+    --ivory: #F5F0E8;
+    --ivory-deep: #EDE5D8;
+    --navy: #35415C;
+    --navy-soft: #6B7A8F;
+    --navy-mist: #8A93A6;
+    --rose: #D8A9A3;
+    --rose-deep: #C48D86;
+    --rose-ink: #7A4F4B;
+    --surface: #FFFDF9;
+    --shadow: rgba(53, 65, 92, 0.12);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: var(--ivory);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(24px, 6vw, 64px) 20px;
+    line-height: 1.8;
+    position: relative;
+  }
+
+  /* 夜の気配：ごく控えめな光の粒 */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(1.5px 1.5px at 12% 18%, var(--rose) 60%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 82% 12%, var(--navy-mist) 60%, transparent 100%),
+      radial-gradient(1px 1px at 68% 78%, var(--rose) 60%, transparent 100%),
+      radial-gradient(1px 1px at 24% 86%, var(--navy-mist) 60%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 92% 60%, var(--rose) 60%, transparent 100%);
+    opacity: 0.5;
+    animation: drift 26s ease-in-out infinite alternate;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ambient { animation: none; }
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-14px); }
+  }
+
+  .stage {
+    width: 100%;
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    color: var(--navy-soft);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 4vw, 1.9rem);
+    margin: 0 0 28px;
+    text-wrap: balance;
+    color: var(--navy);
+  }
+
+  /* 進捗インジケーター */
+  .progress {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 34px;
+  }
+  .progress .dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--navy-mist);
+    opacity: 0.35;
+    transition: opacity 0.4s ease, background-color 0.4s ease;
+  }
+  .progress .dot.done {
+    background: var(--rose);
+    opacity: 1;
+  }
+  .progress .dot.current {
+    background: var(--rose);
+    opacity: 0.6;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: clamp(24px, 5vw, 40px);
+    box-shadow: 0 18px 40px -20px var(--shadow);
+    border: 1px solid color-mix(in srgb, var(--navy-mist) 22%, transparent);
+  }
+
+  .q-count {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    color: var(--navy-soft);
+    margin: 0 0 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .q-text {
+    font-size: clamp(1.12rem, 3vw, 1.3rem);
+    font-weight: 600;
+    margin: 0 0 26px;
+    text-wrap: balance;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 13px;
+    border: 1px solid color-mix(in srgb, var(--navy-mist) 35%, transparent);
+    background: transparent;
+    color: var(--navy);
+    font-size: 0.98rem;
+    transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  }
+  .option:hover {
+    border-color: var(--rose);
+    transform: translateY(-1px);
+  }
+  .option:focus-visible {
+    outline: 2px solid var(--rose-deep);
+    outline-offset: 2px;
+  }
+  .option.selected {
+    background: color-mix(in srgb, var(--rose) 22%, transparent);
+    border-color: var(--rose);
+  }
+  .option .mark {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 0.85rem;
+    color: var(--rose-ink);
+    background: color-mix(in srgb, var(--rose) 30%, transparent);
+  }
+  .option span.label { text-wrap: pretty; }
+
+  .stage-block {
+    animation: rise 0.5s ease both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stage-block { animation: none; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 結果画面 */
+  .result-kicker {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    color: var(--navy-soft);
+    margin: 0 0 8px;
+  }
+  .result-type {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+    font-size: clamp(1.7rem, 5vw, 2.3rem);
+    font-weight: 700;
+    color: var(--rose-ink);
+    margin: 0 0 4px;
+    text-wrap: balance;
+    animation: reveal 0.7s cubic-bezier(.2,.9,.25,1) both;
+  }
+  @keyframes reveal {
+    from { opacity: 0; transform: scale(0.94) translateY(6px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .result-score {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    color: var(--navy-soft);
+    margin: 0 0 22px;
+  }
+  .result-desc {
+    font-size: 1rem;
+    margin: 0 0 18px;
+  }
+  .result-note {
+    font-size: 0.98rem;
+    font-weight: 600;
+    padding: 16px 18px;
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--rose) 16%, transparent);
+    border-left: 3px solid var(--rose);
+    margin: 0 0 30px;
+  }
+
+  .cta {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 26px;
+    border-radius: 999px;
+    background: var(--rose-ink);
+    color: var(--ivory-deep);
+    font-weight: 700;
+    font-size: 0.96rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 10px 24px -12px var(--shadow);
+  }
+  .cta:hover { transform: translateY(-2px); }
+  .cta:focus-visible { outline: 2px solid var(--rose-deep); outline-offset: 3px; }
+
+  .restart {
+    all: unset;
+    cursor: pointer;
+    display: block;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: var(--navy-soft);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .restart:focus-visible { outline: 2px solid var(--rose-deep); outline-offset: 2px; }
+
+  .signoff {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 0.82rem;
+    color: var(--navy-soft);
+  }
+
+  [hidden] { display: none !important; }
+</style>
+
+<div class="ambient" aria-hidden="true"></div>
+
+<main class="stage">
+  <p class="eyebrow">つむぎ恋愛研究所 · 簡易診断</p>
+  <h1>その片思い、実はどのタイプ？<br>10問でわかる恋愛心理タイプ診断</h1>
+
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <section class="card" id="quizCard">
+    <div class="stage-block" id="quizInner">
+      <p class="q-count" id="qCount">Q1 / 10</p>
+      <p class="q-text" id="qText"></p>
+      <div class="options" id="options"></div>
+    </div>
+  </section>
+
+  <section class="card" id="resultCard" hidden>
+    <div class="stage-block" id="resultInner">
+      <p class="result-kicker">診断結果</p>
+      <p class="result-type" id="resultType"></p>
+      <p class="result-score" id="resultScore"></p>
+      <p class="result-desc" id="resultDesc"></p>
+      <p class="result-note" id="resultNote"></p>
+      <a class="cta" href="#" id="ctaLink">心理分析レポートを見てみる →</a>
+      <button class="restart" id="restartBtn">もう一度診断する</button>
+    </div>
+  </section>
+
+  <p class="signoff">また、眠れない夜に。🌙 つむぎ</p>
+</main>
+
+<script>
+(function () {
+  var questions = [
+    { q: "相手からの連絡について", opts: [
+      { t: "用事がなくても、たまに向こうから雑談で連絡がくる", p: 3 },
+      { t: "基本、自分から送らないと会話が続かない", p: 2 },
+      { t: "用事があるときしか連絡してこない", p: 1 }
+    ]},
+    { q: "LINEの既読・返信スピード", opts: [
+      { t: "既読も返信も早い", p: 3 },
+      { t: "既読は早いのに、返信までは時間がかかる", p: 2 },
+      { t: "既読も返信も、良くも悪くもマイペース", p: 1 }
+    ]},
+    { q: "二人の時間について", opts: [
+      { t: "たまに二人きりで話す・会う機会がある", p: 3 },
+      { t: "職場や友人など、誰かがいる場でしか話さない", p: 2 },
+      { t: "そもそも会う・話す頻度自体が少ない", p: 1 }
+    ]},
+    { q: "相手の態度の変化", opts: [
+      { t: "いつも安定していて、態度があまり変わらない", p: 3 },
+      { t: "日によって優しさの差を感じる", p: 2 },
+      { t: "あまり本音を見せてくれず、掴みどころがない", p: 1 }
+    ]},
+    { q: "自分の気持ちについて", opts: [
+      { t: "それとなく好意をにおわせても、自然に受け止めてくれる", p: 3 },
+      { t: "まだ気持ちを一切伝えていない", p: 2 },
+      { t: "好きバレしていないか、逆に不安になることがある", p: 1 }
+    ]},
+    { q: "相手からの関心について", opts: [
+      { t: "相手からよく質問される・気にかけてもらえている感じがある", p: 3 },
+      { t: "たまに聞かれるくらいで、五分五分な感じ", p: 2 },
+      { t: "あまり聞かれない、自分の話ばかりされる", p: 1 }
+    ]},
+    { q: "誘い・予定について", opts: [
+      { t: "相手から誘ってくれることがある", p: 3 },
+      { t: "こちらから誘うと乗ってくれる", p: 2 },
+      { t: "誘っても曖昧にされることが多い", p: 1 }
+    ]},
+    { q: "他の人への態度との違い", opts: [
+      { t: "自分にだけ、少し特別な空気を感じる", p: 3 },
+      { t: "みんなに対してフラットで、違いがよくわからない", p: 2 },
+      { t: "他の異性の話を頻繁にしてくる", p: 1 }
+    ]},
+    { q: "連絡が途切れたときの反応", opts: [
+      { t: "途切れると、相手から様子を伺ってくることがある", p: 3 },
+      { t: "途切れても特に何も起きない", p: 2 },
+      { t: "そのまま自然消滅しそうで、いつも不安になる", p: 1 }
+    ]},
+    { q: "今の距離感についての直感", opts: [
+      { t: "最近、少しずつ距離が縮まってる気がする", p: 3 },
+      { t: "しばらく現状維持って感じ", p: 2 },
+      { t: "むしろ前より遠くなってる気がする", p: 1 }
+    ]}
+  ];
+
+  var results = [
+    { min: 27, max: 30, type: "両想い濃厚タイプ",
+      desc: "連絡・態度・誘い、いろんな面で相手からの好意的なサインが見えているタイプです。かなり良い流れにいるけれど、油断して急に距離を詰めすぎるのはもったいない段階。",
+      note: "今のペースを大事にしながら、次の一歩は相手に委ねる余白も残しておいて。" },
+    { min: 23, max: 26, type: "脈ありサインじわじわタイプ",
+      desc: "好意的なサインは多いけれど、まだムラもある状態。相手の中でも、気持ちがじわじわ育っている途中なのかもしれません。",
+      note: "一喜一憂するより、“良いサインが積み重なっているか”を見てあげて。" },
+    { min: 18, max: 22, type: "様子見・駆け引きタイプ",
+      desc: "態度に波があったり、返信のスピードにムラがあったり。相手もまだ、あなたとの距離感を測っている途中の可能性があります。",
+      note: "不安になりやすい時期だけど、一つの態度で全部を決めつけないで。" },
+    { min: 13, max: 17, type: "片思い沼・進展待ちタイプ",
+      desc: "連絡も会う頻度も少なめで、相手の本音が見えにくい状態。今はまだ、判断材料そのものが足りていないタイプです。",
+      note: "「わからない」を無理に埋めようとしなくて大丈夫。まずは事実を集める段階。" },
+    { min: 10, max: 12, type: "情報不足・仕切り直しタイプ",
+      desc: "今のままだと、相手の気持ちを読み取る手がかりがかなり少ない状態。関係の距離感そのものを、一度見直してもいいタイミングかもしれません。",
+      note: "今のアプローチを変えてみるだけで、見える景色が変わることもあります。" }
+  ];
+
+  var current = 0;
+  var scores = [];
+  var marks = ["A", "B", "C"];
+
+  var progressEl = document.getElementById("progress");
+  var qCountEl = document.getElementById("qCount");
+  var qTextEl = document.getElementById("qText");
+  var optionsEl = document.getElementById("options");
+  var quizInner = document.getElementById("quizInner");
+  var quizCard = document.getElementById("quizCard");
+  var resultCard = document.getElementById("resultCard");
+
+  function buildProgress() {
+    progressEl.innerHTML = "";
+    for (var i = 0; i < questions.length; i++) {
+      var dot = document.createElement("div");
+      dot.className = "dot";
+      progressEl.appendChild(dot);
+    }
+  }
+
+  function updateProgress() {
+    var dots = progressEl.children;
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].className = "dot" + (i < current ? " done" : i === current ? " current" : "");
+    }
+  }
+
+  function renderQuestion() {
+    updateProgress();
+    var item = questions[current];
+    qCountEl.textContent = "Q" + (current + 1) + " / " + questions.length;
+    qTextEl.textContent = item.q;
+    optionsEl.innerHTML = "";
+    item.opts.forEach(function (opt, idx) {
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.type = "button";
+      btn.innerHTML = '<span class="mark">' + marks[idx] + '</span><span class="label"></span>';
+      btn.querySelector(".label").textContent = opt.t;
+      btn.addEventListener("click", function () { selectAnswer(opt.p, btn); });
+      optionsEl.appendChild(btn);
+    });
+    quizInner.classList.remove("stage-block");
+    void quizInner.offsetWidth;
+    quizInner.classList.add("stage-block");
+  }
+
+  function selectAnswer(points, btn) {
+    var siblings = optionsEl.querySelectorAll(".option");
+    siblings.forEach(function (s) { s.classList.remove("selected"); s.disabled = true; });
+    btn.classList.add("selected");
+    scores.push(points);
+    setTimeout(function () {
+      current++;
+      if (current < questions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }, 320);
+  }
+
+  function showResult() {
+    updateProgress();
+    var total = scores.reduce(function (a, b) { return a + b; }, 0);
+    var match = results.find(function (r) { return total >= r.min && total <= r.max; }) || results[results.length - 1];
+    document.getElementById("resultType").textContent = match.type;
+    document.getElementById("resultScore").textContent = "合計 " + total + " 点（10〜30点中）";
+    document.getElementById("resultDesc").textContent = match.desc;
+    document.getElementById("resultNote").textContent = match.note;
+    quizCard.hidden = true;
+    resultCard.hidden = false;
+  }
+
+  document.getElementById("restartBtn").addEventListener("click", function () {
+    current = 0;
+    scores = [];
+    resultCard.hidden = true;
+    quizCard.hidden = false;
+    renderQuestion();
+  });
+
+  buildProgress();
+  renderQuestion();
+})();
+</script>
